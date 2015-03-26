@@ -6,13 +6,17 @@ Group:      Applications/System
 License:    ASL 2.0
 URL:        http://www.tizen.org
 Source0:    %{name}-%{version}.tar.bz2
-BuildRequires:  common
+BuildRequires:  common-apps
 BuildRequires:  zip
 BuildRequires:  desktop-file-utils
+Requires: pkgmgr
+Requires: crosswalk
+Requires: tizen-extensions-crosswalk
+Requires: pkgmgr-server
+Requires: model-config-ivi
+Requires: tizen-middleware-units
+Requires: tizen-platform-config
 Requires:  HomeScreen
-Requires:  speech-recognition
-Requires:   wrt-installer
-Requires:   wrt-plugins-ivi
 
 %description
 A Voiceprint recognition application.
@@ -24,9 +28,15 @@ A Voiceprint recognition application.
 make wgtPkg
 
 %install
-rm -rf %{buildroot}
-%make_install
+#rm -rf %{buildroot}
+make install_obs "OBS=1" DESTDIR="%{?buildroot}"
+
+%post
+su app -c "pkgcmd -i -t wgt -p /opt/usr/apps/.preinstallWidgets/JLRPOCX012.Voiceprint.wgt -q"
+
+%postun
+su app -c "pkgcmd -u -n JLRPOCX012 -q"
 
 %files
 %defattr(-,root,root,-)
-/opt/usr/apps/.preinstallWidgets/Voiceprint.wgt
+/opt/usr/apps/.preinstallWidgets/JLRPOCX012.Voiceprint.wgt
